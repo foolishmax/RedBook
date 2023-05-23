@@ -3,8 +3,9 @@ import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import React from 'react';
 import {StatusBar} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import Page1 from './src/modules/Page1';
-import Page2 from './src/modules/Page2';
+
+import Login from './src/modules/login/Login';
+import Welcome from './src/modules/welcome/Welcome';
 
 /**
  * https://reactnavigation.org/docs/hello-react-navigation
@@ -22,18 +23,18 @@ function App(): JSX.Element {
             cardStyle: {elevation: 1 /**提高页面层级 */},
           }}>
           <Stack.Screen
-            name="PageA"
-            component={Page1}
+            name="Welcome"
+            component={Welcome}
             options={{
               headerShown: false, // 是否隐藏路由标题
             }}
           />
           <Stack.Screen
-            name="PageB"
-            component={Page2}
+            name="Login"
+            component={Login}
             options={{
-              headerShown: false,
-              ...TransitionPresets.SlideFromRightIOS, // 跳转动画风格
+              headerShown: false, // 是否隐藏路由标题
+              ...TransitionPresets.SlideFromRightIOS,
             }}
           />
         </Stack.Navigator>
