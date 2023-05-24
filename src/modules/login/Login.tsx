@@ -6,9 +6,13 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
+
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 import icon_arrow from '../../assets/icon_arrow.png';
 import icon_close_modal from '../../assets/icon_close_modal.png';
@@ -22,6 +26,8 @@ import icon_triangle from '../../assets/icon_triangle.png';
 import icon_unselected from '../../assets/icon_unselected.png';
 import icon_wx from '../../assets/icon_wx.png';
 import icon_wx_small from '../../assets/icon_wx_small.png';
+import UserStore from '../../stores/UserStore';
+import {formatPhone, replaceBlank} from '../../utils/stringUtil';
 
 type LoginType = 'quick' | 'input';
 
@@ -29,6 +35,26 @@ export default () => {
   const [loginType, setLoginType] = useState<LoginType>('quick');
   const [protocolChecked, setProtocolChecked] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+
+  const navigation = useNavigation<StackNavigationProp<any>>();
+
+  const canLogin =
+    phone.length === 13 && password.length >= 6 && password.length <= 16;
+  const onLogin = async () => {
+    if (!canLogin || !protocolChecked) {
+      return;
+    }
+    const purePhone = replaceBlank(phone);
+    UserStore.login(purePhone, password, (success: boolean) => {
+      if (success) {
+        navigation.replace('HomeTab');
+      } else {
+        ToastAndroid.show('登陆失败，请检查手机号和密码', ToastAndroid.LONG);
+      }
+    });
+  };
 
   const renderQuickLogin = () => {
     const styles = StyleSheet.create({
@@ -239,6 +265,16 @@ export default () => {
         justifyContent: 'center',
         borderRadius: 28,
       },
+      loginBtnDisable: {
+        width: '100%',
+        height: 56,
+        marginTop: 20,
+        backgroundColor: '#ddd',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 28,
+      },
       loginTxt: {
         color: 'white',
         fontSize: 20,
@@ -269,6 +305,7 @@ export default () => {
         height: 30,
       },
     });
+
     return (
       <View style={styles.root}>
         <Text style={styles.title}>密码登陆</Text>
@@ -281,6 +318,12 @@ export default () => {
             placeholderTextColor="#bbb"
             placeholder="请输入手机号码"
             autoFocus={false}
+            keyboardType="number-pad"
+            maxLength={13}
+            value={phone}
+            onChangeText={text => {
+              setPhone(formatPhone(text));
+            }}
           />
         </View>
         <View style={styles.password}>
@@ -289,6 +332,12 @@ export default () => {
             placeholder="请输入密码"
             placeholderTextColor="#bbb"
             autoFocus={false}
+            maxLength={16}
+            secureTextEntry={!passwordVisible}
+            value={password}
+            onChangeText={text => {
+              setPassword(text);
+            }}
           />
           <TouchableOpacity
             activeOpacity={0.7}
@@ -306,7 +355,10 @@ export default () => {
           <Text style={styles.code}>验证码登录</Text>
           <Text style={styles.forgetPwd}>忘记密码？</Text>
         </View>
-        <TouchableOpacity activeOpacity={0.7} style={styles.loginBtn}>
+        <TouchableOpacity
+          activeOpacity={canLogin ? 0.7 : 1}
+          style={canLogin ? styles.loginBtn : styles.loginBtnDisable}
+          onPress={onLogin}>
           <Text style={styles.loginTxt}>登陆</Text>
         </TouchableOpacity>
         <View style={allStyles.protocol}>

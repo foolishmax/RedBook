@@ -5,6 +5,7 @@ import {StatusBar} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 import Login from './src/modules/login/Login';
+import MainTab from './src/modules/main/MainTab';
 import Welcome from './src/modules/welcome/Welcome';
 
 /**
@@ -27,6 +28,7 @@ function App(): JSX.Element {
             component={Welcome}
             options={{
               headerShown: false, // 是否隐藏路由标题
+              ...TransitionPresets.SlideFromRightIOS,
             }}
           />
           <Stack.Screen
@@ -34,6 +36,14 @@ function App(): JSX.Element {
             component={Login}
             options={{
               headerShown: false, // 是否隐藏路由标题
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="MainTab"
+            component={MainTab}
+            options={{
+              headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
             }}
           />

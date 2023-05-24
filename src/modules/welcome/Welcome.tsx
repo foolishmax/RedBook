@@ -3,18 +3,31 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {useEffect} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import icon_logo_main from '../../assets/icon_main_logo.png';
+import {load} from '../../utils';
 
 export default () => {
   const navigation = useNavigation<StackNavigationProp<any>>();
 
   useEffect(() => {
     setTimeout(() => {
-      jumpLogin();
-    }, 3000);
+      checkUser();
+    }, 2000);
   }, []);
+
+  const checkUser = async () => {
+    const cacheUser = await load('userInfo');
+    if (cacheUser) {
+      jumpHome();
+    } else {
+      jumpLogin();
+    }
+  };
 
   const jumpLogin = () => {
     navigation.replace('Login');
+  };
+  const jumpHome = () => {
+    navigation.replace('MainTab');
   };
 
   return (
