@@ -6,7 +6,6 @@ import type {
   InternalAxiosRequestConfig,
 } from 'axios';
 import axios from 'axios';
-import {load} from '../Storage';
 import {
   handleAxiosError,
   handleBackendError,
@@ -43,8 +42,8 @@ export default class CustomAxiosInstance {
   setInterceptor() {
     this.instance.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
-        const token = load('token');
-        config.headers.token = token;
+        // const token = load('token');
+        // config.headers.token = token;
         return config;
       },
       (axiosError: AxiosError) => {
@@ -62,6 +61,7 @@ export default class CustomAxiosInstance {
             backend = {data: response.data, code: 0};
           }
           const {codeKey, dataKey, successCode} = this.backendConfig;
+
           if (backend[codeKey] === successCode) {
             return handleServiceResult(null, backend[dataKey]);
           }

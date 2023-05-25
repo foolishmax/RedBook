@@ -26,7 +26,7 @@ import icon_triangle from '../../assets/icon_triangle.png';
 import icon_unselected from '../../assets/icon_unselected.png';
 import icon_wx from '../../assets/icon_wx.png';
 import icon_wx_small from '../../assets/icon_wx_small.png';
-import UserStore from '../../stores/UserStore';
+import useStore from '../../stores';
 import {formatPhone, replaceBlank} from '../../utils/stringUtil';
 
 type LoginType = 'quick' | 'input';
@@ -38,6 +38,8 @@ export default () => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
 
+  const {userStore} = useStore();
+
   const navigation = useNavigation<StackNavigationProp<any>>();
 
   const canLogin =
@@ -47,7 +49,7 @@ export default () => {
       return;
     }
     const purePhone = replaceBlank(phone);
-    UserStore.login(purePhone, password, (success: boolean) => {
+    userStore.login(purePhone, password, (success: boolean) => {
       if (success) {
         navigation.replace('HomeTab');
       } else {
