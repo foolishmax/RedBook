@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -26,6 +25,7 @@ import icon_triangle from '../../assets/icon_triangle.png';
 import icon_unselected from '../../assets/icon_unselected.png';
 import icon_wx from '../../assets/icon_wx.png';
 import icon_wx_small from '../../assets/icon_wx_small.png';
+import Toast from '../../components/widget/Toast';
 import useStore from '../../stores';
 import {formatPhone, replaceBlank} from '../../utils/stringUtil';
 
@@ -53,7 +53,7 @@ export default () => {
       if (success) {
         navigation.replace('HomeTab');
       } else {
-        ToastAndroid.show('登陆失败，请检查手机号和密码', ToastAndroid.LONG);
+        Toast.show('登陆失败，请检查手机号和密码');
       }
     });
   };

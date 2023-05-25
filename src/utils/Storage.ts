@@ -11,7 +11,7 @@ export const save = async (key: string, value: any) => {
 
 export const load = async (key: string) => {
   try {
-    const data = (await AsyncStorage.getItem(key)) || '';
+    const data = (await AsyncStorage.getItem(key)) || '{}';
     return JSON.parse(data);
   } catch (e) {
     console.error(e);

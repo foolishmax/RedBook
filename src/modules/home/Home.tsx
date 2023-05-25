@@ -2,7 +2,6 @@ import {observer} from 'mobx-react';
 import {useEffect} from 'react';
 import {
   Dimensions,
-  FlatList,
   Image,
   ListRenderItem,
   StyleSheet,
@@ -10,17 +9,29 @@ import {
   View,
 } from 'react-native';
 
-// import icon_heart from '../../assets/icon_heart.png'
-import icon_heart_empty from '../../assets/icon_heart_empty.png';
+import FlowList from '../../components/FlowList/FlowList';
+import Heart from '../../components/Heart';
+import ResizeImage from '../../components/ResizeImage';
 import useStore from '../../stores';
+import CategoryList from './CategoryList';
+
+import TabBar from './TabBar';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 export default observer(() => {
-  const {getHomeList, homeList, refreshing, resetPage} = useStore().homeStore;
+  const {
+    getHomeList,
+    homeList,
+    refreshing,
+    resetPage,
+    getCategoryList,
+    categoryList,
+  } = useStore().homeStore;
 
   useEffect(() => {
     getHomeList();
+    getCategoryList();
   }, []);
 
   const onRefresh = () => {
@@ -31,15 +42,15 @@ export default observer(() => {
 
   const Footer = () => <Text style={styles.footerTxt}>没有更多数据</Text>;
 
-  const renderItem: ListRenderItem<ArticleSimple> = ({item, index}) => {
+  const renderItem: ListRenderItem<ArticleSimple> = ({item}) => {
     return (
       <View style={styles.item}>
-        <Image source={{uri: item.image}} style={styles.imageContent} />
+        <ResizeImage uri={item.image} />
         <Text style={styles.titleTxt}>{item.title}</Text>
         <View style={styles.nameWrapper}>
           <Image style={styles.avatarImg} source={{uri: item.avatarUrl}} />
           <Text style={styles.nameTxt}>{item.userName}</Text>
-          <Image style={styles.heart} source={icon_heart_empty} />
+          <Heart value={item.isFavorite} />
           <Text style={styles.countTxt}>{item.favoriteCount}</Text>
         </View>
       </View>
@@ -48,17 +59,31 @@ export default observer(() => {
 
   return (
     <View style={styles.root}>
-      <FlatList
+      <TabBar
+        tab={1}
+        onTabChange={tab => {
+          console.log(tab);
+        }}
+      />
+      <FlowList
         style={styles.flatList}
+        keyExtrator={(item: ArticleSimple) => `${item.id}`}
         data={homeList}
         renderItem={renderItem}
-        contentContainerStyle={styles.container}
         numColumns={2}
         refreshing={refreshing}
         onRefresh={onRefresh}
         onEndReachedThreshold={0.1}
         onEndReached={getHomeList}
         ListFooterComponent={<Footer />}
+        ListHeaderComponent={
+          <CategoryList
+            categoryList={categoryList}
+            onCategoryChange={value => {
+              console.log(value);
+            }}
+          />
+        }
       />
     </View>
   );
@@ -76,9 +101,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  container: {
-    paddingTop: 6,
-  },
   item: {
     // eslint-disable-next-line no-bitwise
     width: (SCREEN_WIDTH - 18) >> 1,
@@ -87,11 +109,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     borderRadius: 8,
     overflow: 'hidden',
-  },
-  imageContent: {
-    width: '100%',
-    height: 260,
-    resizeMode: 'cover',
   },
   titleTxt: {
     fontSize: 14,
