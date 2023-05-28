@@ -10,9 +10,11 @@ export const save = async (key: string, value: any) => {
 };
 
 export const load = async (key: string) => {
+  const data = (await AsyncStorage.getItem(key)) || '';
   try {
-    const data = (await AsyncStorage.getItem(key)) || '{}';
-    return JSON.parse(data);
+    if (data) {
+      return JSON.parse(data);
+    }
   } catch (e) {
     console.error(e);
     return null;

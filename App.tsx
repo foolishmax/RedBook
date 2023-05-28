@@ -4,8 +4,10 @@ import React from 'react';
 import {StatusBar} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
+import ArticleView from './src/modules/article/ArticleView';
 import Login from './src/modules/login/Login';
 import MainTab from './src/modules/main/MainTab';
+import SearchGoods from './src/modules/search-goods/SearchGoods';
 import Welcome from './src/modules/welcome/Welcome';
 
 /**
@@ -45,6 +47,23 @@ function App(): JSX.Element {
             options={{
               headerShown: false,
               ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="ArticleView"
+            component={ArticleView}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS,
+            }}
+          />
+          <Stack.Screen
+            name="SearchGoods"
+            component={SearchGoods}
+            options={{
+              headerShown: false,
+              // ...TransitionPresets.SlideFromRightIOS,
+              presentation: 'transparentModal',
             }}
           />
         </Stack.Navigator>

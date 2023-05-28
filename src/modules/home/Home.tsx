@@ -1,3 +1,5 @@
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {observer} from 'mobx-react';
 import {useEffect} from 'react';
 import {
@@ -6,6 +8,7 @@ import {
   ListRenderItem,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -28,6 +31,8 @@ export default observer(() => {
     getCategoryList,
     categoryList,
   } = useStore().homeStore;
+  const {getArticleDetail} = useStore().articleStore;
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
   useEffect(() => {
     getHomeList();
@@ -35,16 +40,23 @@ export default observer(() => {
   }, []);
 
   const onRefresh = () => {
-    console.log('onrefresh');
     resetPage();
     getHomeList();
   };
 
   const Footer = () => <Text style={styles.footerTxt}>没有更多数据</Text>;
 
+  const onArticlePress = (_article: ArticleSimple) => {
+    navigation.push('ArticleView');
+    getArticleDetail(_article.id);
+    // getArticleDetail(_article.id,{id: _article.id}); //穿参方式
+  };
+
   const renderItem: ListRenderItem<ArticleSimple> = ({item}) => {
     return (
-      <View style={styles.item}>
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => onArticlePress(item)}>
         <ResizeImage uri={item.image} />
         <Text style={styles.titleTxt}>{item.title}</Text>
         <View style={styles.nameWrapper}>
@@ -53,7 +65,7 @@ export default observer(() => {
           <Heart value={item.isFavorite} />
           <Text style={styles.countTxt}>{item.favoriteCount}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -75,6 +87,7 @@ export default observer(() => {
         onRefresh={onRefresh}
         onEndReachedThreshold={0.1}
         onEndReached={getHomeList}
+        stickyHeaderIndices={[0]}
         ListFooterComponent={<Footer />}
         ListHeaderComponent={
           <CategoryList

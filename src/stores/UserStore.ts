@@ -15,10 +15,14 @@ class UserStore {
       } else {
         cb(false);
       }
-    } catch {
+    } finally {
       Loading.hide();
     }
   }
+
+  setUserInfo = (user: any) => {
+    this.userInfo = user;
+  };
 }
 
 export default UserStore;

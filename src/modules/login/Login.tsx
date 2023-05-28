@@ -51,7 +51,7 @@ export default () => {
     const purePhone = replaceBlank(phone);
     userStore.login(purePhone, password, (success: boolean) => {
       if (success) {
-        navigation.replace('HomeTab');
+        navigation.replace('MainTab');
       } else {
         Toast.show('登陆失败，请检查手机号和密码');
       }
